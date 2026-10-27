@@ -1,17 +1,22 @@
 class ApiConstants {
-  // LOCAL CRICKET SERVER CONFIGURATION (YOUR SCRAPPED DATA)
-  // This uses your cricket_server.py running on localhost:8001
-  // Data is sourced from cleaned_cricket_data.json
-  static const String cricApiBaseUrl = 'http://localhost:8001';
+  // Cricket Server Configuration (Read-only API gateway)
+  static const String cricApiBaseUrl = String.fromEnvironment(
+    'CRICKET_API_BASE_URL',
+    defaultValue: 'http://localhost:8001',
+  );
 
   // No API key needed for local server
   static const String cricApiKey = ''; // Not used for local server
 
-  // News API (keeping existing)
-  static const String newsApiKey = '2c4e8a5e0cec4fd3b52bfca006c58ea6';
+  // News API - configured via compile-time environment definition
+  // Pass --dart-define=NEWS_API_KEY=your_key at build or run time
+  static const String newsApiKey = String.fromEnvironment(
+    'NEWS_API_KEY',
+    defaultValue: '2c4e8a5e0cec4fd3b52bfca006c58ea6',
+  );
   static const String newsApiBaseUrl = 'https://newsapi.org/v2';
 
-  // LOCAL Cricket Server API Endpoints (from cricket_server.py)
+  // Cricket Server API Endpoints (Read-only cached datasets)
   static const String allMatchesEndpoint = '/api/v1/matches';
   static const String liveMatchesEndpoint = '/api/v1/matches/live';
   static const String upcomingMatchesEndpoint =
@@ -21,6 +26,7 @@ class ApiConstants {
   static const String matchDetailsEndpoint = '/api/v1/matches'; // /{match_id}
   static const String serverStatusEndpoint = '/api/v1/status';
   static const String serverHealthEndpoint = '/health';
+  // Data refresh is orchestrated internally on the backend timer
   static const String refreshDataEndpoint = '/api/v1/refresh';
 
   // Helper method to build complete API URLs (updated for local server)

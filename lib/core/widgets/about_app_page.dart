@@ -14,10 +14,10 @@ class _AboutAppPageState extends State<AboutAppPage> {
   PackageInfo? _packageInfo;
 
   static final Uri _contactUsUri = Uri.parse(
-    'https://sites.google.com/view/zarmira-contact/home',
+    'mailto:huraira.eqeel@gmail.com?subject=Cricket%20World%20App%20Support',
   );
   static final Uri _privacyPolicyUri = Uri.parse(
-    'https://hurairamuzammal.github.io/cricket_world_github/',
+    'https://github.com/hurairamuzammal/Cricket-world/blob/main/PRIVACY.md',
   );
 
   @override
@@ -158,7 +158,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
                     'Follow every match with live scores, sharp analysis, and curated stories crafted for passionate fans.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: colors.onSurface.withOpacity(0.72),
+                      color: colors.onSurface.withValues(alpha: 0.72),
                       height: 1.4,
                     ),
                   ),
@@ -229,6 +229,49 @@ class _AboutAppPageState extends State<AboutAppPage> {
                     style: TextStyle(
                       height: 1.5,
                       color: colors.onSurface.withOpacity(0.78),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: colors.outlineVariant.withValues(alpha: 0.5),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.gavel_outlined,
+                        size: 20,
+                        color: colors.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Legal Disclaimer & Fair Use',
+                        style: GoogleFonts.montserrat(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'World of Cricket is an independent sports informational and analytics application. It is NOT affiliated with, sponsored by, or endorsed by the International Cricket Council (ICC), the Board of Control for Cricket in India (BCCI), the Pakistan Cricket Board (PCB), ESPNcricinfo, or any national cricket board or franchise.\n\nAll team names, match schedules, tournament identifiers, player names, and trademarks belong to their respective copyright and trademark holders. They are referenced strictly under nominative Fair Use for public reporting and sports analytics.',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      height: 1.45,
+                      color: colors.onSurface.withValues(alpha: 0.72),
                     ),
                   ),
                 ],

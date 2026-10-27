@@ -119,6 +119,16 @@ lib/
 
 ---
 
+## ⚖️ Legal Disclaimer & Fair Use Notice
+
+**World of Cricket** is an independent, non-commercial sports informational and analytical application built for cricket enthusiasts. 
+
+- **Non-Affiliation**: This project is **NOT affiliated with, sponsored by, or endorsed by** the International Cricket Council (ICC), the Board of Control for Cricket in India (BCCI), the Pakistan Cricket Board (PCB), ESPNcricinfo, or any official cricket board, league, or sports franchise.
+- **Trademarks & Copyrights**: All team names, logos, tournament identifiers, player names, and related trademarks are the intellectual property of their respective owners. They are referenced strictly under nominative **Fair Use** (17 U.S.C. 107) for informational, educational, and statistical reporting purposes.
+- **Scores & Data**: Live match scores, ball-by-ball numbers, and statistical tables are factual sports results. The application does not rebroadcast live audiovisual streams or replicate proprietary commentary text.
+
+---
+
 ## 👨‍💻 Developer & Contact
 
 Developed with ❤️ by **Muhammad Abu Huraira**

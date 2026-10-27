@@ -5,7 +5,7 @@ import '../models/cricket_models.dart';
 
 class LocalCricketDataService {
   static const String _dataFilePath =
-      'scarpy/espncricinfo/cleaned_cricket_data.json';
+      'assets/data/cleaned_cricket_data.json';
 
   // Singleton pattern
   static final LocalCricketDataService _instance =
@@ -32,7 +32,6 @@ class LocalCricketDataService {
         // Try multiple paths in order of preference - prioritize assets for Flutter
         final paths = [
           'assets/data/cleaned_cricket_data.json',
-          'assets/data/sample_cricket_data.json',
           _dataFilePath,
         ];
 
@@ -63,13 +62,13 @@ class LocalCricketDataService {
           }
         }
 
-        if (!fileFound) {
-          print('📝 No data files found, using sample data as fallback');
-          jsonContent = _getSampleJsonData();
+        if (!fileFound || jsonContent.trim().isEmpty) {
+          print('ℹ️ No local data file found');
+          return [];
         }
       } catch (e) {
         print('⚠️ Error reading data file: $e');
-        jsonContent = _getSampleJsonData();
+        return [];
       }
 
       final List<dynamic> jsonData = json.decode(jsonContent);
@@ -89,7 +88,7 @@ class LocalCricketDataService {
     }
   }
 
-  /// Convert JSON from scrapy data to Flutter CricketMatch model with AI-enhanced mapping
+  /// Convert JSON from local match dataset to Flutter CricketMatch model with AI-enhanced mapping
   CricketMatch _convertToFlutterModel(Map<String, dynamic> json) {
     // Smart team extraction
     final teams = _extractTeamsWithScores(json);
@@ -442,10 +441,12 @@ class LocalCricketDataService {
     if (title.contains('t20') || description.contains('t20')) return 'T20';
     if (title.contains('odi') || description.contains('odi')) return 'ODI';
     if (title.contains('test') || description.contains('test')) return 'Test';
-    if (title.contains('final') || description.contains('final'))
+    if (title.contains('final') || description.contains('final')) {
       return 'Final';
-    if (title.contains('semi') || description.contains('semi'))
+    }
+    if (title.contains('semi') || description.contains('semi')) {
       return 'Semi-Final';
+    }
 
     return 'Limited Overs';
   }
@@ -561,7 +562,7 @@ class LocalCricketDataService {
 
       print('🎯 Live matches found: ${liveMatches.length}');
 
-      // Always return live matches if found, otherwise create samples for demo
+      // Return live matches if found, otherwise return empty list
       if (liveMatches.isNotEmpty) {
         return CricketApiResponse(
           success: true,
@@ -576,32 +577,28 @@ class LocalCricketDataService {
         );
       }
 
-      // If no live matches found, show some sample matches for demonstration
-      print('⚠️ No live matches found, creating sample data for demo');
-      final sampleLiveMatches = _createSampleLiveMatches();
+      print('ℹ️ No live matches currently found');
       return CricketApiResponse(
         success: true,
-        data: sampleLiveMatches,
+        data: [],
         meta: CricketApiMeta(
           totalCount: allMatches.length,
-          filteredCount: sampleLiveMatches.length,
-          filterType: 'live_sample',
+          filteredCount: 0,
+          filterType: 'live',
           lastUpdated: DateTime.now().toIso8601String(),
           apiVersion: 'Local-1.0',
         ),
       );
     } catch (e) {
       print('❌ Error in getLiveMatchesSafe: $e');
-      // Return sample data on error
-      final sampleMatches = _createSampleLiveMatches();
       return CricketApiResponse(
         success: false,
-        data: sampleMatches,
+        data: [],
         error: e.toString(),
         meta: CricketApiMeta(
           totalCount: 0,
-          filteredCount: sampleMatches.length,
-          filterType: 'error_fallback',
+          filteredCount: 0,
+          filterType: 'error',
           lastUpdated: DateTime.now().toIso8601String(),
           apiVersion: 'Local-1.0',
         ),
@@ -768,7 +765,7 @@ class LocalCricketDataService {
         teams: {}, // Can be implemented if needed
         features: {
           'local_data': true,
-          'scrapy_integration': true,
+          'dataset_integration': true,
           'llm_cleaned': true,
         },
       );
@@ -788,147 +785,14 @@ class LocalCricketDataService {
     }
   }
 
-  /// Get sample JSON data as fallback
+  /// Get sample JSON data as fallback (returns empty list)
   String _getSampleJsonData() {
-    return json.encode([
-      {
-        "match_id": "sample_001",
-        "match_url": "https://example.com/sample1",
-        "team1": "India",
-        "team2": "Australia",
-        "series_name": "Sample Series",
-        "match_status": "Live",
-        "match_format": "T20",
-        "venue": "Sample Stadium",
-        "extraction_timestamp": DateTime.now().toIso8601String(),
-        "quality_score": 0.9,
-      },
-      {
-        "match_id": "sample_002",
-        "match_url": "https://example.com/sample2",
-        "team1": "England",
-        "team2": "South Africa",
-        "series_name": "Sample Test Series",
-        "match_status": "Completed",
-        "match_format": "Test",
-        "venue": "Sample Ground",
-        "extraction_timestamp": DateTime.now().toIso8601String(),
-        "quality_score": 0.85,
-      },
-    ]);
+    return '[]';
   }
 
-  /// Create sample live matches for testing/fallback based on actual data patterns
+  /// Create sample live matches (returns empty list - no dummy data)
   List<CricketMatch> _createSampleLiveMatches() {
-    return [
-      CricketMatch(
-        id: 'live_sample_leicestershire_lancashire',
-        title: 'Leicestershire vs Lancashire',
-        series: 'Second XI Championship',
-        status: 'Live - Day 3 in progress',
-        teams: [
-          TeamData(
-            name: 'Leicestershire',
-            score: '245/6',
-            overs: '68.3',
-            wickets: '6',
-            runRate: '3.6',
-          ),
-          TeamData(
-            name: 'Lancashire',
-            score: '312/8d',
-            overs: '95',
-            wickets: '8',
-            runRate: '3.3',
-          ),
-        ],
-        venue: 'Leicester, England, United Kingdom',
-        matchType: 'Second XI',
-        url: '',
-        liveStatus: 'live',
-        source: 'ESPNCricinfo Enhanced',
-        lastUpdated: DateTime.now().toIso8601String(),
-        enhancedInfo: EnhancedMatchInfo(
-          matchDate: DateTime.now().toString().split(' ')[0],
-          matchTime: '10:30',
-          city: 'Leicester',
-          state: 'England',
-          country: 'United Kingdom',
-          qualityScore: 0.68,
-        ),
-      ),
-      CricketMatch(
-        id: 'live_sample_surrey_yorkshire',
-        title: 'Surrey vs Yorkshire',
-        series: 'Second XI Championship',
-        status: 'Live - Surrey batting',
-        teams: [
-          TeamData(
-            name: 'Surrey',
-            score: '156/4',
-            overs: '42.1',
-            wickets: '4',
-            runRate: '3.7',
-          ),
-          TeamData(
-            name: 'Yorkshire',
-            score: '289/9d',
-            overs: '87',
-            wickets: '9',
-            runRate: '3.3',
-          ),
-        ],
-        venue: 'Guildford, England, United Kingdom',
-        matchType: 'Second XI',
-        url: '',
-        liveStatus: 'live',
-        source: 'ESPNCricinfo Enhanced',
-        lastUpdated: DateTime.now().toIso8601String(),
-        enhancedInfo: EnhancedMatchInfo(
-          matchDate: DateTime.now().toString().split(' ')[0],
-          matchTime: '10:30',
-          city: 'Guildford',
-          state: 'England',
-          country: 'United Kingdom',
-          qualityScore: 0.55,
-        ),
-      ),
-      CricketMatch(
-        id: 'live_sample_uae_afghanistan',
-        title: 'UAE vs Afghanistan',
-        series: 'UAE T20I Tri-Series',
-        status: 'Live - Innings break',
-        teams: [
-          TeamData(
-            name: 'Afghanistan',
-            score: '170/4',
-            overs: '20',
-            wickets: '4',
-            runRate: '8.5',
-          ),
-          TeamData(
-            name: 'UAE',
-            score: '45/1',
-            overs: '6.2',
-            wickets: '1',
-            runRate: '7.1',
-          ),
-        ],
-        venue: 'Sharjah, UAE',
-        matchType: 'T20',
-        url: '',
-        liveStatus: 'live',
-        source: 'ESPNCricinfo Enhanced',
-        lastUpdated: DateTime.now().toIso8601String(),
-        enhancedInfo: EnhancedMatchInfo(
-          matchDate: DateTime.now().toString().split(' ')[0],
-          matchTime: '21:30',
-          targetScore: 171,
-          ballsRemaining: 82,
-          qualityScore: 0.48,
-        ),
-      ),
-    ];
+    return [];
   }
 
   /// Debug method to check data loading
